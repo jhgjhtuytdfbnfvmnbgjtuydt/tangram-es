@@ -81,8 +81,8 @@ void LabelCollider::process(TileID _tileID, float _tileInverseScale, float _tile
               });
 
     // Set view parameters so that the tile is rendererd at
-    // style-zoom-level + 1. (scaled up by factor 2)
-    int overzoom = 1;
+    // style-zoom-level + 2. (scaled up by factor 4)
+    int overzoom = 2;
     float tileScale = pow(2, _tileID.s - _tileID.z + overzoom);
     glm::vec2 screenSize{ _tileSize * tileScale };
 
