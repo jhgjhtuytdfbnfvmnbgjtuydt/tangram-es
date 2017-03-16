@@ -598,6 +598,12 @@ std::shared_ptr<Texture> SceneLoader::fetchTexture(const std::shared_ptr<Platfor
             }
 
         } else {
+            auto& asset = scene->sceneAssets()[url];
+            if (!asset) {
+                LOGE("No asset found for url: %s", url.c_str());
+                return nullptr;
+            }
+
             auto data = scene->sceneAssets()[url]->readBytesFromAsset(platform);
 
             if (data.size() == 0) {
@@ -652,7 +658,6 @@ void SceneLoader::loadTexture(const std::shared_ptr<Platform>& platform, const s
     }
 
     auto texture = fetchTexture(platform, name, file, options, generateMipmaps, scene);
-    if (!texture) { return; }
 
     std::lock_guard<std::mutex> lock(m_textureMutex);
     if (Node sprites = textureConfig["sprites"]) {

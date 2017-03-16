@@ -45,7 +45,7 @@ void Asset::buildZipHandle(const std::vector<char>& zipData) {
     mz_zip_archive* zip = static_cast<mz_zip_archive*>(m_zipHandle->archiveHandle.get());
     memset(zip, 0, sizeof(mz_zip_archive));
     if (!mz_zip_reader_init_mem(zip, zipData.data(), zipData.size(), 0)) {
-        LOGE("ZippedAssetPackage: Could not open archive");
+        LOGE("ZippedAssetPackage: Could not open archive: %s", m_name.c_str());
         m_zipHandle.reset();
         return;
     }
@@ -57,7 +57,7 @@ void Asset::buildZipHandle(const std::vector<char>& zipData) {
     for (unsigned int i = 0; i < mz_zip_reader_get_num_files(zip); i++) {
         mz_zip_archive_file_stat st;
         if (!mz_zip_reader_file_stat(zip, i, &st)) {
-            LOGE("ZippedAssetPackage: Could not read file stats");
+            LOGE("ZippedAssetPackage: Could not read file stats: %s", st.m_filename);
             continue;
         }
         if (isBaseYaml(st.m_filename)) {
@@ -81,12 +81,12 @@ std::vector<char> Asset::readBytesFromAsset(const std::shared_ptr<Platform>& pla
                 std::size_t elementSize = 0;
                 char* elementData = static_cast<char*>(mz_zip_reader_extract_to_heap(zip, it->second, &elementSize, 0));
                 if (!elementData) {
-                    LOGE("ZippedAssetPackage::loadAsset: Could not load archive asset");
+                    LOGE("ZippedAssetPackage::loadAsset: Could not load archive asset: %s", filename.c_str());
                 } else {
                     fileData.resize(elementSize);
                     fileData.assign(elementData, elementData + elementSize);
+                    mz_free(elementData);
                 }
-                mz_free(elementData);
                 elementData = nullptr;
             }
         }
