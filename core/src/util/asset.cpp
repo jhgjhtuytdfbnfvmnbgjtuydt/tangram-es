@@ -41,10 +41,11 @@ void Asset::buildZipHandle(const std::vector<char>& zipData) {
 
     m_zipHandle = std::make_shared<ZipHandle>();
     m_zipHandle->archiveHandle = ZipHandle::unique_ptr_zip_archive(new mz_zip_archive());
+    m_zipHandle->data = zipData;
 
     mz_zip_archive* zip = static_cast<mz_zip_archive*>(m_zipHandle->archiveHandle.get());
     memset(zip, 0, sizeof(mz_zip_archive));
-    if (!mz_zip_reader_init_mem(zip, zipData.data(), zipData.size(), 0)) {
+    if (!mz_zip_reader_init_mem(zip, m_zipHandle->data.data(), m_zipHandle->data.size(), 0)) {
         LOGE("ZippedAssetPackage: Could not open archive: %s", m_name.c_str());
         m_zipHandle.reset();
         return;

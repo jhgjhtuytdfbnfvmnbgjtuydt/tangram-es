@@ -18,12 +18,14 @@ struct ZipHandle {
 
     unique_ptr_zip_archive archiveHandle;
     std::map<std::string, unsigned int> fileIndices = {};
+
+    std::vector<char> data;
 };
 
 class Asset {
     public:
         Asset(std::string name, std::string path, std::shared_ptr<ZipHandle> zipHandle = nullptr,
-                std::vector<char> zippedData = {});
+              std::vector<char> zippedData = {});
         ~Asset();
 
         const std::shared_ptr<ZipHandle> zipHandle() const { return m_zipHandle; }

@@ -153,7 +153,7 @@ bool nodeIsTextureUrl(const Node& node, const Node& textures) {
 }
 
 void  Importer::createSceneAsset(const std::shared_ptr<Platform>& platform, const Url& resolvedUrl,
-        const Url& relativeUrl, const Url& base) {
+                                 const Url& relativeUrl, const Url& base) {
 
     auto& sceneAssets = m_scene->sceneAssets();
     auto& resolvedStr = resolvedUrl.string();
