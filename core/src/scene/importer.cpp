@@ -69,9 +69,9 @@ Node Importer::applySceneImports(const std::shared_ptr<Platform>& platform) {
         }
 
         isZipped = isZipUrl(path);
+        auto& assetZipHandle = m_scene->sceneAssets()[path.string()]->zipHandle();
 
-        if (path.hasHttpScheme()) {
-            // TODO: more required here
+        if (path.hasHttpScheme() && !assetZipHandle) {
             progressCounter++;
             platform->startUrlRequest(path.string(), [&, isZipped, path](std::vector<char>&& rawData) {
                 if (!rawData.empty()) {
@@ -167,13 +167,11 @@ void  Importer::createSceneAsset(const std::shared_ptr<Platform>& platform, cons
 
     if (isZipUrl(resolvedUrl)) {
         // data to be fetched later (and zipHandle created) in network callback
-        // TODO: Check this with an import of absolute file path or https url
-        if (resolvedUrl.hasHttpScheme() && !relativeUrl.isAbsolute()) {
+        if (relativeUrl.hasHttpScheme() || (resolvedUrl.hasHttpScheme() && base.isEmpty())) {
             sceneAssets[resolvedStr] = std::make_unique<Asset>(resolvedStr, relativeStr);
             return;
         }
 
-        //check if absolute urls have `//` instead of a single `/`
         if (relativeUrl.isAbsolute() || base.isEmpty()) {
             sceneAssets[resolvedStr] = std::make_unique<Asset>(resolvedStr, relativeStr, nullptr,
                     platform->bytesFromFile(resolvedStr.c_str()));
@@ -277,8 +275,7 @@ void Importer::resolveSceneUrls(const std::shared_ptr<Platform>& platform, Node&
 
     // Resolve data source URLs.
 
-    // TODO/NOTE/DISCUSS: can mbtiles or other datasource be inside a zip bundle.. can we handle it
-    // normally?
+    // TODO: create assets for sources
     if (Node sources = root["sources"]) {
         for (auto source : sources) {
             if (!source.second.IsMap()) { continue; }
@@ -332,7 +329,7 @@ std::vector<Url> Importer::getResolvedImportUrls(const std::shared_ptr<Platform>
         if (import.IsScalar()) {
             auto resolvedUrl = Url(import.Scalar()).resolved(base);
             createSceneAsset(platform, resolvedUrl, import.Scalar(), base);
-            scenePaths.push_back(Url(import.Scalar()).resolved(base));
+            scenePaths.push_back(resolvedUrl);
         } else if (import.IsSequence()) {
             for (const auto& path : import) {
                 if (path.IsScalar()) {

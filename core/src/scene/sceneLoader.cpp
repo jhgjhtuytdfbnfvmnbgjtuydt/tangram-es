@@ -550,8 +550,15 @@ std::shared_ptr<Texture> SceneLoader::fetchTexture(const std::shared_ptr<Platfor
 
     std::regex r("^(http|https):/");
     std::smatch match;
+
+    auto& asset = scene->sceneAssets()[url];
+    if (!asset) {
+        LOGE("No asset found for url: %s", url.c_str());
+        return nullptr;
+    }
+
     // TODO: generalize using URI handlers
-    if (std::regex_search(url, match, r)) {
+    if (std::regex_search(url, match, r) && !asset->zipHandle()) {
         scene->pendingTextures++;
         platform->startUrlRequest(url, [=](std::vector<char>&& rawData) {
                 std::lock_guard<std::mutex> lock(m_textureMutex);
@@ -598,13 +605,8 @@ std::shared_ptr<Texture> SceneLoader::fetchTexture(const std::shared_ptr<Platfor
             }
 
         } else {
-            auto& asset = scene->sceneAssets()[url];
-            if (!asset) {
-                LOGE("No asset found for url: %s", url.c_str());
-                return nullptr;
-            }
 
-            auto data = scene->sceneAssets()[url]->readBytesFromAsset(platform);
+            auto data = asset->readBytesFromAsset(platform);
 
             if (data.size() == 0) {
                 LOGE("Can't load texture resource at url '%s'", url.c_str());
@@ -720,7 +722,13 @@ void loadFontDescription(const std::shared_ptr<Platform>& platform, const Node& 
     std::regex regex("^(http|https):/");
     std::smatch match;
 
-    if (std::regex_search(uri, match, regex)) {
+    auto& asset = scene->sceneAssets()[_ft.uri];
+    if (!asset) {
+        LOGE("No asset found for url: %s", _ft.uri.c_str());
+        return;
+    }
+
+    if (std::regex_search(uri, match, regex) && !asset->zipHandle()) {
         // Load remote
         scene->pendingFonts++;
         platform->startUrlRequest(_ft.uri, [_ft, scene](std::vector<char>&& rawData) {
@@ -732,7 +740,7 @@ void loadFontDescription(const std::shared_ptr<Platform>& platform, const Node& 
             scene->pendingFonts--;
         });
     } else {
-        auto data = scene->sceneAssets()[_ft.uri.c_str()]->readBytesFromAsset(platform);
+        auto data = asset->readBytesFromAsset(platform);
 
         if (data.size() == 0) {
             LOGW("Local font at path %s can't be found (%s)", _ft.uri.c_str(), _ft.bundleAlias.c_str());
