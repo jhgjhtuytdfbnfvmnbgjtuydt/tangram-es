@@ -50,7 +50,7 @@ class Asset {
     private:
         std::string m_name; //resolvedUrl
         std::string m_path; //path within a zip, empty for a non zipped asset
-        std::shared_ptr<ZipHandle> m_zipHandle = nullptr; // handle to the zip archive
+        std::shared_ptr<ZipHandle> m_zipHandle = nullptr;
 
         bool isBaseYaml(const std::string& filename);
 };
