@@ -408,7 +408,6 @@ void framebufferResizeCallback(GLFWwindow* window, int fWidth, int fHeight) {
     }
     map->setPixelScale(density);
     map->resize(fWidth, fHeight);
-
 }
 
 } // namespace GlfwApp
