@@ -8,19 +8,7 @@
 namespace Tangram {
 
 class Platform;
-
-struct MZ_ZIP_ARCHIVE_DELETER {
-    void operator()(void* p);
-};
-
-struct ZipHandle {
-    using unique_ptr_zip_archive = std::unique_ptr<void, MZ_ZIP_ARCHIVE_DELETER>;;
-
-    unique_ptr_zip_archive archiveHandle;
-    std::map<std::string, unsigned int> fileIndices = {};
-
-    std::vector<char> data;
-};
+struct ZipHandle;
 
 class Asset {
     public:
