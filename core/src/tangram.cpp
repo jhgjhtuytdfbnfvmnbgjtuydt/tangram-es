@@ -893,6 +893,10 @@ void Map::onMemoryWarning() {
     if (tileCache) {
         tileCache->clear();
     }
+
+    if (impl->scene && impl->scene->fontContext()) {
+        impl->scene->fontContext()->releaseFonts();
+    }
 }
 
 void setDebugFlag(DebugFlags _flag, bool _on) {
