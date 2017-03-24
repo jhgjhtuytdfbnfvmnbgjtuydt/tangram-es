@@ -36,6 +36,8 @@ enum class TGMarkerType {
 @property (strong, nonatomic) UIImage* icon;
 @property (weak, nonatomic) TGMapViewController* map;
 
+- (NSError * _autoreleasing *)createNSError;
+
 @end
 
 @implementation TGMarker
@@ -67,7 +69,20 @@ enum class TGMarkerType {
     return self;
 }
 
-- (BOOL)setStylingString:(NSString *)styling
+- (void)createNSError:(NSError * __autoreleasing *)outError
+{
+    if (*outError) {
+        NSMutableDictionary* userInfo = [[NSMutableDictionary alloc] init];
+        // TODO: add enum for object error
+        // [userInfo setObject: forKey:@"TGMarker"];
+
+        *outError = [NSError errorWithDomain:@"TGMarker"
+                                        code:(NSInteger)updateError.error
+                                    userInfo:userInfo];
+    }
+}
+
+- (BOOL)setStylingString:(NSString *)styling error:(NSError * _autoreleasing *)error
 {
     _stylingString = styling;
     _stylingPath = nil;
@@ -77,7 +92,7 @@ enum class TGMarkerType {
     return tangramInstance->markerSetStylingFromString(identifier, [styling UTF8String]);
 }
 
-- (BOOL)setStylingPath:(NSString *)path
+- (BOOL)setStylingPath:(NSString *)path error:(NSError * _autoreleasing *)error
 {
     _stylingPath = path;
     _stylingString = nil;
@@ -87,7 +102,7 @@ enum class TGMarkerType {
     return tangramInstance->markerSetStylingFromPath(identifier, [path UTF8String]);
 }
 
-- (BOOL)setPoint:(TGGeoPoint)coordinates
+- (BOOL)setPoint:(TGGeoPoint)coordinates error:(NSError * _autoreleasing *)error
 {
     _point = coordinates;
     type = TGMarkerType::point;
@@ -99,7 +114,7 @@ enum class TGMarkerType {
     return tangramInstance->markerSetPoint(identifier, lngLat);
 }
 
-- (BOOL)setPointEased:(TGGeoPoint)coordinates seconds:(float)seconds easeType:(TGEaseType)ease
+- (BOOL)setPointEased:(TGGeoPoint)coordinates seconds:(float)seconds easeType:(TGEaseType)ease error:(NSError * _autoreleasing *)error
 {
     _point = coordinates;
     type = TGMarkerType::point;
@@ -111,7 +126,7 @@ enum class TGMarkerType {
     return tangramInstance->markerSetPointEased(identifier, lngLat, seconds, [TGHelpers convertEaseTypeFrom:ease]);
 }
 
-- (BOOL)setPolyline:(TGGeoPolyline *)polyline
+- (BOOL)setPolyline:(TGGeoPolyline *)polyline error:(NSError * _autoreleasing *)error
 {
     _polyline = polyline;
     type = TGMarkerType::polyline;
@@ -122,7 +137,7 @@ enum class TGMarkerType {
         reinterpret_cast<Tangram::LngLat*>([polyline coordinates]), polyline.count);
 }
 
-- (BOOL)setPolygon:(TGGeoPolygon *)polygon
+- (BOOL)setPolygon:(TGGeoPolygon *)polygon error:(NSError * _autoreleasing *)error
 {
     _polygon = polygon;
     type = TGMarkerType::polygon;
@@ -134,7 +149,7 @@ enum class TGMarkerType {
     return tangramInstance->markerSetPolygon(identifier, coords, [polygon rings], [polygon ringsCount]);
 }
 
-- (BOOL)setVisible:(BOOL)visible
+- (BOOL)setVisible:(BOOL)visible error:(NSError * _autoreleasing *)error
 {
     _visible = visible;
 
@@ -143,7 +158,7 @@ enum class TGMarkerType {
     return tangramInstance->markerSetVisible(identifier, visible);
 }
 
-- (BOOL)setDrawOrder:(NSInteger)drawOrder
+- (BOOL)setDrawOrder:(NSInteger)drawOrder error:(NSError * _autoreleasing *)error
 {
     _drawOrder = drawOrder;
 
@@ -152,7 +167,7 @@ enum class TGMarkerType {
     return tangramInstance->markerSetDrawOrder(identifier, (int)drawOrder);
 }
 
-- (BOOL)setIcon:(UIImage *)icon
+- (BOOL)setIcon:(UIImage *)icon error:(NSError * _autoreleasing *)error
 {
     _icon = icon;
 
@@ -179,7 +194,7 @@ enum class TGMarkerType {
     return tangramInstance->markerSetBitmap(identifier, w, h, bitmap.data());
 }
 
-- (BOOL)setMap:(TGMapViewController *)mapView
+- (BOOL)setMap:(TGMapViewController *)mapView error:(NSError * _autoreleasing *)error
 {
     // remove marker from current view
     if (!mapView && tangramInstance && identifier) {

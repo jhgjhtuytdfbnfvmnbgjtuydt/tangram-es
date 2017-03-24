@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @note Markers can have their geometry set multiple time with possibly different geometry types.
  */
-- (BOOL)setPointEased:(TGGeoPoint)coordinates seconds:(float)seconds easeType:(TGEaseType)ease;
+- (BOOL)setPointEased:(TGGeoPoint)coordinates seconds:(float)seconds easeType:(TGEaseType)ease error:(NSError * _autoreleasing *)error;
 
 /**
  Sets the styling for a marker with a string of YAML defining a 'draw rule'.
@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @note Setting the stylingString will overwrite any previously set stylingString or stylingPath.
  */
-- (BOOL)setStylingString:(NSString *)styling;
+- (BOOL)setStylingString:(NSString *)styling error:(NSError * _autoreleasing *)error;
 
 /**
  Sets the styling for a marker with a path, delimited by '.' that specifies a 'draw rule' in the
@@ -77,38 +77,38 @@ NS_ASSUME_NONNULL_BEGIN
 
  @note Setting the stylingPath will overwrite any previously set stylingString or stylingPath.
  */
-- (BOOL)setStylingPath:(NSString *)path;
+- (BOOL)setStylingPath:(NSString *)path error:(NSError * _autoreleasing *)error;
 
 /**
  Sets a marker to be a single point geometry at a geographic coordinate.
 
  @note Markers can have their geometry set multiple time with possibly different geometry types.
  */
-- (BOOL)setPoint:(TGGeoPoint)coordinates;
+- (BOOL)setPoint:(TGGeoPoint)coordinates error:(NSError * _autoreleasing *)error;
 
 /**
  Sets a marker styled to be a polyline (described in a `TGGeoPolyline`).
 
  @note Markers can have their geometry set multiple time wwith possibly different geometry types.
  */
-- (BOOL)setPolyline:(TGGeoPolyline *)polyline;
+- (BOOL)setPolyline:(TGGeoPolyline *)polyline error:(NSError * _autoreleasing *)error;
 
 /**
  Sets a marker to be a polygon geometry (described in a `TGGeoPolygon`).
 
  @note Markers can have their geometry set multiple time with possibly different geometry types.
  */
-- (BOOL)setPolygon:(TGGeoPolygon *)polygon;
+- (BOOL)setPolygon:(TGGeoPolygon *)polygon error:(NSError * _autoreleasing *)error;
 
 /**
  Adjusts marker visibility
  */
-- (BOOL)setVisible:(BOOL)visible;
+- (BOOL)setVisible:(BOOL)visible error:(NSError * _autoreleasing *)error;
 
 /**
  Set the ordering of point marker object relative to other markers; higher values are drawn 'above'.
  */
-- (BOOL)setDrawOrder:(NSInteger)drawOrder;
+- (BOOL)setDrawOrder:(NSInteger)drawOrder error:(NSError * _autoreleasing *)error;
 
 /**
  Sets an icon loaded with a <a href="https://developer.apple.com/reference/uikit/uiimage">
@@ -125,7 +125,7 @@ NS_ASSUME_NONNULL_BEGIN
  @note An icon marker must be styled with a
  <a href="https://mapzen.com/documentation/tangram/Styles-Overview/#points">point style</a>.
  */
-- (BOOL)setIcon:(UIImage *)icon;
+- (BOOL)setIcon:(UIImage *)icon error:(NSError * _autoreleasing *)error;
 
 NS_ASSUME_NONNULL_END
 
@@ -134,6 +134,6 @@ NS_ASSUME_NONNULL_END
  Setting this property will add the marker to the map, and setting it to `nil` will remove the marker from it.
  A marker can be only active at at most one `TGMapViewController` at a time.
  */
-- (BOOL)setMap:(TGMapViewController *)mapView;
+- (BOOL)setMap:(TGMapViewController *)mapView error:(NSError * __autoreleasing *)error;
 
 @end
