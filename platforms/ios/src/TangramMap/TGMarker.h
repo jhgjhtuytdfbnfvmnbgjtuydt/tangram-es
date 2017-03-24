@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 
  @note Setting the stylingString will overwrite any previously set stylingString or stylingPath.
  */
-@property (copy, nonatomic) NSString* stylingString;
+- (BOOL)setStylingString:(NSString *)styling;
 
 /**
  Sets the styling for a marker with a path, delimited by '.' that specifies a 'draw rule' in the
@@ -77,38 +77,38 @@ NS_ASSUME_NONNULL_BEGIN
 
  @note Setting the stylingPath will overwrite any previously set stylingString or stylingPath.
  */
-@property (copy, nonatomic) NSString* stylingPath;
+- (BOOL)setStylingPath:(NSString *)path;
 
 /**
  Sets a marker to be a single point geometry at a geographic coordinate.
 
  @note Markers can have their geometry set multiple time with possibly different geometry types.
  */
-@property (assign, nonatomic) TGGeoPoint point;
+- (BOOL)setPoint:(TGGeoPoint)coordinates;
 
 /**
  Sets a marker styled to be a polyline (described in a `TGGeoPolyline`).
 
  @note Markers can have their geometry set multiple time wwith possibly different geometry types.
  */
-@property (strong, nonatomic) TGGeoPolyline* polyline;
+- (BOOL)setPolyline:(TGGeoPolyline *)polyline;
 
 /**
  Sets a marker to be a polygon geometry (described in a `TGGeoPolygon`).
 
  @note Markers can have their geometry set multiple time with possibly different geometry types.
  */
-@property (strong, nonatomic) TGGeoPolygon* polygon;
+- (BOOL)setPolygon:(TGGeoPolygon *)polygon;
 
 /**
  Adjusts marker visibility
  */
-@property (assign, nonatomic) BOOL visible;
+- (BOOL)setVisible:(BOOL)visible;
 
 /**
  Set the ordering of point marker object relative to other markers; higher values are drawn 'above'.
  */
-@property (assign, nonatomic) NSInteger drawOrder;
+- (BOOL)setDrawOrder:(NSInteger)drawOrder;
 
 /**
  Sets an icon loaded with a <a href="https://developer.apple.com/reference/uikit/uiimage">
@@ -125,7 +125,7 @@ NS_ASSUME_NONNULL_BEGIN
  @note An icon marker must be styled with a
  <a href="https://mapzen.com/documentation/tangram/Styles-Overview/#points">point style</a>.
  */
-@property (strong, nonatomic) UIImage* icon;
+- (BOOL)setIcon:(UIImage *)icon;
 
 NS_ASSUME_NONNULL_END
 
@@ -134,6 +134,6 @@ NS_ASSUME_NONNULL_END
  Setting this property will add the marker to the map, and setting it to `nil` will remove the marker from it.
  A marker can be only active at at most one `TGMapViewController` at a time.
  */
-@property (weak, nonatomic) TGMapViewController* _Nullable map;
+- (BOOL)setMap:(TGMapViewController *)mapView;
 
 @end
