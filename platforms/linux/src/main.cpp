@@ -22,6 +22,10 @@ int main(int argc, char* argv[]) {
             break;
         }
     }
+    char *loc = setlocale(LC_ALL, "de_DE.utf-8");
+    logMsg("LOCALE %s\n", loc);
+    loc = setlocale(LC_ALL, NULL);
+    logMsg("LOCALE %s - %f\n", loc, 435145.342134);
 
     // Create the windowed app.
     GlfwApp::create(platform, sceneFile, 1024, 768);
