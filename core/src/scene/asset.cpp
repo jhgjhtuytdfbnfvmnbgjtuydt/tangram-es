@@ -13,7 +13,7 @@ namespace Tangram {
 struct ZipHandle {
     ~ZipHandle();
     std::unique_ptr<mz_zip_archive> archiveHandle;
-    std::unordered_map<std::string, std::pair<unsigned int, size_t>> fileInfo = {};
+    std::unordered_map<std::string, std::pair<unsigned int, size_t>> fileInfo;
 
     std::vector<char> data;
 };
